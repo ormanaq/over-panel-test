@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>PyroPanel</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/" class="active">Dashboard</a></li>
+                    <li><a href="/servers">Servers</a></li>
+                    <li><a href="/users">Users</a></li>
+                    <li><a href="/settings">Settings</a></li>
+                </ul>
+            </nav>
+            <div class="user-menu">
+                <span>Welcome, {{ user.username if user else 'Guest' }}</span>
+                {% if user %}
+                <a href="/logout" class="btn btn-sm">Logout</a>
+                {% else %}
+                <a href="/login" class="btn btn-sm">Login</a>
+                {% endif %}
+            </div>
+        </header>
+
+        <main>
+            <div class="dashboard">
+                <div class="stats-cards">
+                    <div class="card">
+                        <h3>Servers</h3>
+                        <div class="stat">{{ stats.total_servers }}</div>
+                        <div class="stat-label">Total</div>
+                        <div class="stat-secondary">{{ stats.active_servers }} Active</div>
+                    </div>
+                    <div class="card">
+                        <h3>CPU Usage</h3>
+                        <div class="stat">{{ stats.cpu_usage }}%</div>
+                        <div class="stat-label">Current</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: {{ stats.cpu_usage }}%;"></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Memory Usage</h3>
+                        <div class="stat">{{ stats.memory_usage }}%</div>
+                        <div class="stat-label">Current</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: {{ stats.memory_usage }}%;"></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Disk Usage</h3>
+                        <div class="stat">{{ stats.disk_usage }}%</div>
+                        <div class="stat-label">Current</div>
+                        <div class="progress-bar">
+                            <div class="progress" style="width: {{ stats.disk_usage }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-8">
+                        <div class="card">
+                            <h3>Resource Usage History</h3>
+                            <canvas id="resourceChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="card">
+                            <h3>Server Status</h3>
+                            <div class="server-status-list">
+                                {% for server in servers %}
+                                <div class="server-status-item">
+                                    <div class="server-name">{{ server.name }}</div>
+                                    <div class="server-game">{{ server.game_type }}</div>
+                                    <div class="server-status status-{{ server.status }}">{{ server.status }}</div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Recent Activity</h3>
+                    <div class="activity-list">
+                        {% for activity in activities %}
+                        <div class="activity-item">
+                            <div class="activity-time">{{ activity.time }}</div>
+                            <div class="activity-description">{{ activity.description }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <div>PyroPanel v0.1.0 - A Python-based Game Server Management Panel</div>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', path='/js/main.js') }}"></script>
+    <script>
+        // Sample data for the resource chart
+        const ctx = document.getElementById('resourceChart').getContext('2d');
+        const resourceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['12:00', '12:05', '12:10', '12:15', '12:20', '12:25', '12:30'],
+                datasets: [{
+                    label: 'CPU Usage (%)',
+                    data: [15, 20, 25, 30, 25, 20, 15],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    tension: 0.4
+                }, {
+                    label: 'Memory Usage (%)',
+                    data: [30, 35, 40, 45, 40, 35, 30],
+                    borderColor: 'rgba(153, 102, 255, 1)',
+                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

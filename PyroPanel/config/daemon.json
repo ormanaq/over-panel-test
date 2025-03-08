@@ -1,0 +1,9 @@
+{
+    "api_url": "http://localhost:8000",
+    "api_key": "",
+    "update_interval": 10,
+    "stats_interval": 60,
+    "backup_interval": 86400,
+    "backup_dir": "backups",
+    "log_level": "INFO"
+}

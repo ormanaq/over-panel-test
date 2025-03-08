@@ -1,1 +1,0 @@
-# PyroPanel App Package
